@@ -1,6 +1,6 @@
 include Makefile.inc
 
-default: alg/lib-BPLG/KTridiagLF.o alg/lib-BPLG/KTridiagCR.o alg/lib-BPLG/KTridiagPCR.o alg/lib-BPLG/KTridiagWM.o
+default: BPLib
 
 run: BPLib
 	./BPLib

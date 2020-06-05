@@ -122,7 +122,7 @@ int test(int algo, int size, int batch, int rep, const char *out) {
             << "Average: " << err_norm1 << endl \
             << "RMSE:    " << err_norm2 << endl \
             << "Max:     " << err_norminf << "  (max position: " << err_maxid << ")" << endl \
-            << fixed << "Size:" << setw(7) << size << ",   Time: " << setprecision(3) << t << " s,   " \
+            << fixed << "Size:" << setw(7) << size << ",   Time: " << setprecision(3) << (t*1e3) << " ms,   " \
             << "Throughput: " << setprecision(6) << throughput << " N/ns" << endl << endl;
         if(out != NULL) {
             ofstream(out, ios_base::app) << setw(6) << size << ',' << setw(8) << batch << ',' \

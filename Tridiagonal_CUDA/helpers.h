@@ -35,11 +35,14 @@ template<> struct selector<float> {
         {WM4_reg_single, "reg WM-half-pGE", nullptr, nullptr, 0},
         {CR_reg4_single, "reg-4 CR", nullptr, nullptr, 0},
         {CR_reg8_single, "reg-8 CR", nullptr, nullptr, 0},
-        {CR_reg16_single, "reg-16 CR", nullptr, nullptr, 0},
+        {CR_reg16_single, "reg-16 CR", nullptr, nullptr, 0}
+#ifdef BPLG
+        ,
         {BPLG_WM, "BPLG WM", nullptr, nullptr, 1},
         {BPLG_LF, "BPLG LF", nullptr, nullptr, 1},
         {BPLG_CR, "BPLG CR", nullptr, nullptr, 1},
         {BPLG_PCR, "BPLG PCR", nullptr, nullptr, 1}
+#endif
     };
 };
 

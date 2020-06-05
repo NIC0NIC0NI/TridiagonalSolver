@@ -1,3 +1,4 @@
+#include <cusparse.h>
 #include "tridiagonal.h"
 
 template<typename val_t>
@@ -199,4 +200,48 @@ int CR_init_double(double *a_gbl, double *b_gbl, double *c_gbl, double *d_gbl, i
 
 void CR_final() {
     cudaFree(buffer);
+}
+
+static cusparseHandle_t cusparse_handle;
+
+int cuSparse_init_single(float *a_gbl, float *b_gbl, float *c_gbl, float *d_gbl, int n_eqt, int n_batch) {
+    size_t size;
+    int ret = cusparseCreate(&cusparse_handle);
+    if(ret != CUSPARSE_STATUS_SUCCESS) {
+        return ret;
+    }
+    cusparseSgtsv2StridedBatch_bufferSizeExt(cusparse_handle, n_eqt, a_gbl, b_gbl, c_gbl, d_gbl, n_batch, n_eqt, &size);
+    ret = cudaMalloc(&buffer, size);
+    if(ret != cudaSuccess) {
+        cusparseDestroy(cusparse_handle);
+    }
+    return ret;
+}
+
+int cuSparse_init_double(double *a_gbl, double *b_gbl, double *c_gbl, double *d_gbl, int n_eqt, int n_batch) {
+    size_t size;
+    int ret = cusparseCreate(&cusparse_handle);
+    if(ret != CUSPARSE_STATUS_SUCCESS) {
+        return ret;
+    }
+    cusparseDgtsv2StridedBatch_bufferSizeExt(cusparse_handle, n_eqt, a_gbl, b_gbl, c_gbl, d_gbl, n_batch, n_eqt, &size);
+    ret = cudaMalloc(&buffer, size);
+    if(ret != cudaSuccess) {
+        cusparseDestroy(cusparse_handle);
+    }
+    return ret;
+}
+
+void cuSparse_final() {
+    cudaFree(buffer);
+    cusparseDestroy(cusparse_handle);
+}
+
+void cuSparse_single(float *a_gbl, float *b_gbl, float *c_gbl, float *d_gbl, int n_eqt, int n_batch) {
+    cusparseSgtsv2StridedBatch(cusparse_handle, n_eqt, a_gbl, b_gbl, c_gbl, d_gbl, n_batch, n_eqt, buffer);
+    cudaDeviceSynchronize();
+}
+void cuSparse_double(double *a_gbl, double *b_gbl, double *c_gbl, double *d_gbl, int n_eqt, int n_batch) {
+    cusparseDgtsv2StridedBatch(cusparse_handle, n_eqt, a_gbl, b_gbl, c_gbl, d_gbl, n_batch, n_eqt, buffer);
+    cudaDeviceSynchronize();
 }
