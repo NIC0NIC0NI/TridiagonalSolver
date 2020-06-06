@@ -9,10 +9,10 @@ CXX = icpc
 CUCC = nvcc
 
 BPLG = ./third_party/BPLib
-BPLIBINC = -I$(BPLG)
+BPLIBFLG = -I$(BPLG) -DBPLG
 BPLIBOBJ = tridiagonal_third_party.o $(BPLG)/alg/lib-BPLG/KTridiagCR.o $(BPLG)/alg/lib-BPLG/KTridiagLF.o $(BPLG)/alg/lib-BPLG/KTridiagWM.o $(BPLG)/alg/lib-BPLG/KTridiagPCR.o
 
-CUFLAGS = --std c++11 -O3 $(GPU_FLAGS) $(BPLIBINC)
+CUFLAGS = --std c++11 -O3 $(GPU_FLAGS) $(BPLIBFLG)
 CXXFLAGS = -std=c++11 -O3
 CULIBS = -L$(CUDA_PATH)/lib64  -L$(CUDA_PATH)/lib64/stubs -lcuda -lcudart -lcusparse
 CXXLIBS = -mkl=parallel $(CULIBS)
@@ -46,6 +46,14 @@ resource_usage_format:resource_usage_format.cpp
 resource_usage_raw.txt: tridiagonal_wm_pcr.o
 resource_usage.txt:resource_usage_format resource_usage_raw.txt
 	./resource_usage_format < resource_usage_raw.txt
+
+third_party_bplg:
+	$(MAKE) -C $(BPLG)
+
+$(BPLG)/alg/lib-BPLG/KTridiagCR.o:third_party_bplg
+$(BPLG)/alg/lib-BPLG/KTridiagLF.o:third_party_bplg
+$(BPLG)/alg/lib-BPLG/KTridiagWM.o:third_party_bplg
+$(BPLG)/alg/lib-BPLG/KTridiagPCR.o:third_party_bplg
 
 clean:
 	rm test resource_usage_format *.o
