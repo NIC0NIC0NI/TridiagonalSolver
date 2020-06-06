@@ -31,6 +31,8 @@
 *.out
 *.app
 *.o
+
+# Temparary files of editors
 *.cu~~
 *.hxx~~
 *.swp
